@@ -1,4 +1,57 @@
 package com.dhiman.paymentserviceaugust25mfweve.services;
 
-public class RazorpayPaymentService {
+import com.razorpay.PaymentLink;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
+import org.json.JSONObject;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+@Service
+@Primary
+public class RazorpayPaymentService implements PaymentService {
+   private RazorpayClient razorpayClient;
+   public RazorpayPaymentService(RazorpayClient razorpayClient) {
+       this.razorpayClient = razorpayClient;
+   }
+
+    @Override
+    public String createPaymentLink(String orderId) throws RazorpayException {
+        JSONObject paymentLinkRequest = new JSONObject();
+        paymentLinkRequest.put("amount",1000);
+        paymentLinkRequest.put("currency","INR");
+        paymentLinkRequest.put("accept_partial",false);
+//        paymentLinkRequest.put("first_min_partial_amount",100);
+        paymentLinkRequest.put("expire_by",System.currentTimeMillis() + 15 * 60 * 1000);
+        paymentLinkRequest.put("reference_id", orderId);
+        paymentLinkRequest.put("description","Payment for policy no " + orderId);
+        JSONObject customer = new JSONObject();
+        customer.put("name","+918894877050");
+        customer.put("contact","Anurag Dhiman");
+        customer.put("email","agoodinternetuser@gmail.com");
+        paymentLinkRequest.put("customer",customer);
+        JSONObject notify = new JSONObject();
+        notify.put("sms",true);
+        notify.put("email",true);
+        paymentLinkRequest.put("reminder_enable",true);
+        JSONObject notes = new JSONObject();
+        notes.put("Order Items","1. iPhone 16 Pro Max");
+        paymentLinkRequest.put("notes",notes);
+        paymentLinkRequest.put("callback_url","https://naman.dev/");
+        paymentLinkRequest.put("callback_method","get");
+
+        PaymentLink payment = razorpayClient.paymentLink.create(paymentLinkRequest);
+        return payment.get("short_url");
+   }
+
+    @Override
+    public String getPaymentStatus(String orderId) {
+        // Go to the DB
+        // check if the status of payment in DB
+        // if no:
+        // call the payment gateway to check status of payment
+        // update that status ito its own DB
+        // return the status
+       return null;
+    }
 }
