@@ -18,7 +18,7 @@ public class RazorpayPaymentService implements PaymentService {
     @Override
     public String createPaymentLink(String orderId) throws RazorpayException {
         JSONObject paymentLinkRequest = new JSONObject();
-        paymentLinkRequest.put("amount",1000);
+        paymentLinkRequest.put("amount",10000); // this is 10 rs payment
         paymentLinkRequest.put("currency","INR");
         paymentLinkRequest.put("accept_partial",false);
 //        paymentLinkRequest.put("first_min_partial_amount",100);
@@ -26,8 +26,8 @@ public class RazorpayPaymentService implements PaymentService {
         paymentLinkRequest.put("reference_id", orderId);
         paymentLinkRequest.put("description","Payment for policy no " + orderId);
         JSONObject customer = new JSONObject();
-        customer.put("name","+918894877050");
-        customer.put("contact","Anurag Dhiman");
+        customer.put("name","Anurag Dhiman");
+        customer.put("contact","8894877050");
         customer.put("email","agoodinternetuser@gmail.com");
         paymentLinkRequest.put("customer",customer);
         JSONObject notify = new JSONObject();
@@ -37,7 +37,7 @@ public class RazorpayPaymentService implements PaymentService {
         JSONObject notes = new JSONObject();
         notes.put("Order Items","1. iPhone 16 Pro Max");
         paymentLinkRequest.put("notes",notes);
-        paymentLinkRequest.put("callback_url","https://naman.dev/");
+        paymentLinkRequest.put("callback_url","https://facebook.com");
         paymentLinkRequest.put("callback_method","get");
 
         PaymentLink payment = razorpayClient.paymentLink.create(paymentLinkRequest);
